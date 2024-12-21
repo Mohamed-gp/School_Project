@@ -1,20 +1,26 @@
-# Use the official Node.js image as the base image
-FROM node:14
+# SwiftBuy backend dockerfile
 
-# Set the working directory
-WORKDIR /app
+# Step 1: Use the official Node.js image
+FROM node:18
 
-# Copy package.json and package-lock.json
+# Step 2: Set working directory inside the container
+WORKDIR /usr/src/app
+
+# Step 3: Copy package.json and package-lock.json
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+# Step 4: Install dependencies
+RUN npm ci
 
-# Copy the rest of the application code
+# Step 5: Copy the rest of the app's source code
 COPY . .
 
-# Expose the port the app runs on
-EXPOSE 5000
 
-# Start the application
-CMD ["npm", "start"]
+
+# Step 5.1: Add a health check to ensure the container is running properly
+# HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 CMD curl -f http://localhost:3000/ || exit 1
+# Step 6: Expose the port the app runs on
+EXPOSE 3001
+
+# Step 7: Command to serve the SwiftBuy backend 
+CMD ["npm", "run","dev"]

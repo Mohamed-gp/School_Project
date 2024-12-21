@@ -1,27 +1,28 @@
-# Use the official Node.js image as the base image
-FROM node:14
+# krelli Frontend Dockerfile
 
-# Set the working directory
-WORKDIR /app
+# Step 1: Use the official Node.js image
+FROM node:18
 
-# Copy package.json and package-lock.json
+# Step 2: Set working directory inside the container
+WORKDIR /usr/src/app
+
+# Step 3: Copy package.json and package-lock.json
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+# Step 4: Install dependencies
+RUN npm ci
 
-# Copy the rest of the application code
+# Step 5: Copy the rest of the app's source code
 COPY . .
 
-# Build the React app
+# Step 6: Build the React app for production
 RUN npm run build
 
-# Use a lightweight web server to serve the static files
-FROM nginx:alpine
-COPY --from=0 /app/build /usr/share/nginx/html
+# Step 7: Install a lightweight HTTP server to serve the static files
+RUN npm install -g serve
 
-# Expose the port the app runs on
-EXPOSE 80
+# Step 8: Expose the port the app runs on
+EXPOSE 5001
 
-# Start Nginx server
-CMD ["nginx", "-g", "daemon off;"]
+# Step 9: Command to serve the app
+CMD ["serve", "-s", "dist", "-l", "5001"]

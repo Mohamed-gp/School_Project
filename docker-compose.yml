@@ -1,32 +1,20 @@
-version: '3.8'
-
+version: "3.8"
 services:
   backend:
-    build: ./backend
+    build: ./back-end
+    image: krelli-backend-image
+    container_name: krelli-backend-container
     ports:
-      - "5000:5000"
-    volumes:
-      - ./backend:/app
-    environment:
-      - NODE_ENV=development
-    depends_on:
-      - mongo
-
+      - "3001:3001"
+    restart: always
+    env_file:
+      - back-end/.env
   frontend:
-    build: ./frontend
+    build: ./front-end
+    image: krelli-frontend-image
+    container_name: krelli-frontend-container
     ports:
-      - "3000:80"
-    volumes:
-      - ./frontend:/app
-    environment:
-      - NODE_ENV=development
-
-  mongo:
-    image: mongo:latest
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo-data:/data/db
-
-volumes:
-  mongo-data:
+      - "5001:5001"
+    restart: always
+    env_file:
+      - front-end/.env
